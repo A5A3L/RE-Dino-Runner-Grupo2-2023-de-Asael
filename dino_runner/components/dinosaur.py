@@ -61,9 +61,10 @@ class Dinosaur(Sprite):
             self.jump_vel -= 0.8 
             
         if self.jump_vel < - self.JUMP_VEL:
+           #self.dino_rect.y = self.Y_Pos
             self.dino_jump = False
             self.jump_vel = self.JUMP_VEL 
-            
+    
         print(self.dino_rect.y)
     
     def duck(self):
