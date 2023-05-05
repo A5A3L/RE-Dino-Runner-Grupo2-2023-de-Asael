@@ -69,6 +69,9 @@ BG = pygame.image.load(os.path.join(IMG_DIR, 'Other/Track.png'))
 
 HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 
+MUSIC = "D:\Proyecto musica\RE-Dino-Runner-Grupo2-2023-de-Asael\dino_runner\components\music\Rayman-Legends-Soundtrack-Castle-Rock-_8-bit__MP3_160K_.wav"
+
+
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = "shield" 
-
+HAMMER_TYPE = "hammer"

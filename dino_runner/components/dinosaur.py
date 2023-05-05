@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING, DUCKING_SHIELD, JUMPING, JUMPING_SHIELD, RUNNING, RUNNING_SHIELD, SCREEN_WIDTH
+from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING, DUCKING_HAMMER, DUCKING_SHIELD, JUMPING, JUMPING_HAMMER, JUMPING_SHIELD, RUNNING, RUNNING_HAMMER, RUNNING_SHIELD, SCREEN_WIDTH
 class Dinosaur(Sprite):
     X_Pos = 80
     Y_Pos = 310
@@ -57,6 +57,18 @@ class Dinosaur(Sprite):
             else:
                 self.image = RUNNING_SHIELD[1]
             self.step_index += 1
+            
+        elif self.hammer:
+            self.image = RUNNING_HAMMER
+            self.dino_rect.y = self.Y_Pos
+            self.image = RUNNING
+            self.dino_rect.y = self.Y_Pos
+            if self.step_index< 5:
+                self.image = RUNNING_HAMMER[0]
+            else:
+                self.image = RUNNING_HAMMER[1]
+            self.step_index += 1
+            
         else:
             self.image = RUNNING
             self.dino_rect.y = self.Y_Pos
@@ -69,6 +81,16 @@ class Dinosaur(Sprite):
     def jump(self):
         if self.shield:
             self.image = JUMPING_SHIELD
+            if self.dino_jump:
+                self.dino_rect.y -= self.jump_vel * 4
+                self.jump_vel -= 0.8
+            if self.jump_vel < -self.JUMP_VEL:
+                self.dino_rect.y = self.Y_Pos
+                self.dino_jump = False
+                self.jump_vel = self.JUMP_VEL
+        
+        elif self.hammer:
+            self.image = JUMPING_HAMMER
             if self.dino_jump:
                 self.dino_rect.y -= self.jump_vel * 4
                 self.jump_vel -= 0.8
@@ -97,7 +119,16 @@ class Dinosaur(Sprite):
            else:
                self.image = DUCKING_SHIELD[1]
            self.step_index += 1
-                
+        
+        elif self.hammer:
+            self.image = DUCKING_HAMMER
+            self.dino_rect.y = self.POS_DUCK
+            if self.step_index< 5:
+                self.image = DUCKING_HAMMER[0]
+            else:
+                self.image = DUCKING_SHIELD[1]
+            self.step_index += 1
+                  
         else:
             self.image = DUCKING [0]
             self.dino_rect.y = self.POS_DUCK
@@ -106,14 +137,13 @@ class Dinosaur(Sprite):
             else:
                 self.image = DUCKING[1]
             self.step_index += 1
-            
                 
-            
-        
     def setup_state_booleans(self):
         self.shield = False
+        self.hammer = False
         self.show_text = False
         self.shield_time_up = 0
+        self.hammer_time_up = 0
         self.has_powerup = False
     
     def check_invincibility(self, screen):
@@ -128,4 +158,16 @@ class Dinosaur(Sprite):
                     screen.blit(text, textRect)
             else:
                 self.shield = False
-            
+    
+    def check_hammer(self, screen):
+        if self.hammer:
+            time_to_show = round ((self.hammer_time_up - pygame.time.get_ticks())/1000,2)
+            if time_to_show >= 0:
+                if self.show_text:
+                    font = pygame.font.Font('freesansbold.ttf', 18)
+                    text = font.render(f'Hammer enable for {time_to_show}', True, (0,0,0))
+                    textRect = text.get_rect()
+                    textRect.center = (500, 40)
+                    screen.blit(text, textRect)
+            else:
+                self.hammer = False

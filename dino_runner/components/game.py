@@ -4,7 +4,7 @@ from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components import text_utils
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
-from dino_runner.utils.constants import BG, ICON, RUNNING, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, ICON, MUSIC, RUNNING, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
 
 class Game:
@@ -25,8 +25,12 @@ class Game:
         self.points = 0
         self.running = True
         self.death_count = 0
-        
+        self.song = MUSIC
+    
     def run(self):
+        pygame.mixer.music.load(self.song)
+        pygame.mixer.music.set_volume(0.2) 
+        pygame.mixer.music.play(-1) 
         # Game loop: events - update - draw
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups(self.points)
@@ -42,8 +46,11 @@ class Game:
         while self.running:
             if not self.playing:
                 self.show_menu()
-                
+        
+               
+        
     def show_menu(self):
+        
         self.running = True
         #print = white background
         white_color = (255, 255, 255)
@@ -89,6 +96,7 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
+            
                 #Si sale del juego el estado re¿¿de running debe ser fals
                 self.running = False
         self.screen.fill((255, 255, 255))
@@ -127,4 +135,5 @@ class Game:
             self.game_speed += 1
         text, text_rect = text_utils.get_score_element(str(self.points))
         self.player.check_invincibility(self.screen)
+        self.player.check_hammer(self.screen)
         self.screen.blit(text, text_rect)    
