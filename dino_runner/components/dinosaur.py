@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING, JUMPING, RUNNING
+from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING, DUCKING_SHIELD, JUMPING, JUMPING_SHIELD, RUNNING, RUNNING_SHIELD, SCREEN_WIDTH
 class Dinosaur(Sprite):
     X_Pos = 80
     Y_Pos = 310
@@ -49,34 +49,66 @@ class Dinosaur(Sprite):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
         
     def run(self):
-        self.dino_rect.y = self.Y_Pos
-        if self.step_index< 5:
-            self.image = RUNNING[0]
+        if self.shield:
+            self.image = RUNNING_SHIELD 
+            self.dino_rect.y = self.Y_Pos
+            if self.step_index< 5:
+                self.image = RUNNING_SHIELD[0]
+            else:
+                self.image = RUNNING_SHIELD[1]
+            self.step_index += 1
         else:
-            self.image = RUNNING[1]
-        self.step_index += 1 
+            self.image = RUNNING
+            self.dino_rect.y = self.Y_Pos
+            if self.step_index< 5:
+                self.image = RUNNING[0]
+            else:
+                self.image = RUNNING[1]
+        self.step_index += 1
                
     def jump(self):
-        self.image = JUMPING 
-        if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8 
-            
-        if self.jump_vel < - self.JUMP_VEL:
-           #self.dino_rect.y = self.Y_Pos
-            self.dino_jump = False
-            self.jump_vel = self.JUMP_VEL 
-    
-        print(self.dino_rect.y)
+        if self.shield:
+            self.image = JUMPING_SHIELD
+            if self.dino_jump:
+                self.dino_rect.y -= self.jump_vel * 4
+                self.jump_vel -= 0.8
+            if self.jump_vel < -self.JUMP_VEL:
+                self.dino_rect.y = self.Y_Pos
+                self.dino_jump = False
+                self.jump_vel = self.JUMP_VEL
+        
+        else:
+            self.image = JUMPING
+            if self.dino_jump:
+                self.dino_rect.y -= self.jump_vel * 4
+                self.jump_vel -= 0.8
+            if self.jump_vel < -self.JUMP_VEL:
+                self.dino_rect.y = self.Y_Pos
+                self.dino_jump = False
+                self.jump_vel = self.JUMP_VEL
+                
     
     def duck(self):
-        self.image = DUCKING[0]
-        self.dino_rect.y = self.POS_DUCK
-        if self.step_index< 5:
-            self.image = DUCKING[0]
+        if self.shield:
+           self.image = DUCKING_SHIELD[0] 
+           self.dino_rect.y = self.POS_DUCK
+           if self.step_index< 5:
+               self.image = DUCKING_SHIELD[0]
+           else:
+               self.image = DUCKING_SHIELD[1]
+           self.step_index += 1
+                
         else:
-            self.image = DUCKING[1]
-        self.step_index += 1
+            self.image = DUCKING [0]
+            self.dino_rect.y = self.POS_DUCK
+            if self.step_index< 5:
+                self.image = DUCKING[0]
+            else:
+                self.image = DUCKING[1]
+            self.step_index += 1
+            
+                
+            
         
     def setup_state_booleans(self):
         self.shield = False
@@ -96,4 +128,4 @@ class Dinosaur(Sprite):
                     screen.blit(text, textRect)
             else:
                 self.shield = False
-        
+            

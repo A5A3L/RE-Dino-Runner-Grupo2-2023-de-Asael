@@ -48,7 +48,6 @@ class Game:
         #print = white background
         white_color = (255, 255, 255)
         self.screen.fill(white_color)
-        
         #print = menu elements
         self.print_menu_elements()
         pygame.display.update()
